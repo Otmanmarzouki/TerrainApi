@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TerrainController;
+use App\Http\Controllers\ReservationController;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -55,6 +56,11 @@ Route::post('/addTerrain',[TerrainController::class,'create']);
 Route::get('/getTerrain',[TerrainController::class,'index']);
 Route::post('/update/{id}',[TerrainController::class,'update']);
 Route::post('/delete/{id}',[TerrainController::class,'destroy']);
+
+
+//----ReservationApis-----//
+Route::post('/addReservation',[ReservationController::class,'create']);
+Route::post('/nombreClient/{sport}',[ReservationController::class,'nombreClient']);
 
 
 
