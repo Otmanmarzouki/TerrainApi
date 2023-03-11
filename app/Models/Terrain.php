@@ -11,9 +11,14 @@ class Terrain extends Model
 
 
     protected $fillable = [
-        'NomDeTerrain',
-        'IdentifiantDeTerrain',
+       
+        'Nom_Terrain',
         'Capacité',
         'activité',
     ];
+
+
+
 }
+
+

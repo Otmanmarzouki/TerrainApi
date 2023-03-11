@@ -15,14 +15,18 @@ return new class extends Migration
     {
         Schema::create('reservations', function (Blueprint $table) {
             $table->id();
-            $table->string('Nom');
-            $table->string('Prenom');
-            $table->integer('numTel');
-            $table->string('email');
-            $table->string('sport');
-            $table->string('DateDebut');
-            $table->string('DateFin');
+            $table->unsignedBigInteger('terrains_id');
+            $table->unsignedBigInteger('client_id'); 
+            $table->date('DateDebut');
+            $table->date('DateFin');
             $table->timestamps();
+            $table->foreign('terrains_id')
+            ->references('id')->on('terrains')
+            ->onDelete('cascade');
+            $table->foreign('client_id')
+            ->references('id')->on('Clients')
+            ->onDelete('cascade');
+           
         });
     }
 

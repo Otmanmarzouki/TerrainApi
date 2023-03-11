@@ -9,12 +9,18 @@ class reservation extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'Nom',
-        'Prenom',
-        'numTel',
-        'email',
-        'sport',
+        
         'DateDebut',
         'DateFin',
     ];
+
+    public function Clients()
+{
+    return $this->belongsTo(Clients::class);
+}
+public function Terrain()
+{
+    return $this->belongsTo(Terrain::class);
+}
+   
 }
