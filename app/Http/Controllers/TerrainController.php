@@ -28,14 +28,14 @@ class TerrainController extends Controller
     {
         $Terrain = new Terrain();
          $request->validate([
-            'NomDeTerrain'=>'required',
-            'IdentifiantDeTerrain'=>'required',
+            'Nom_Terrain'=>'required',
+            
             'Capacité'=>'required',
             'activité'=>'required',
        
         ]);
-        $Terrain->NomDeTerrain=$request->NomDeTerrain;
-        $Terrain->IdentifiantDeTerrain=$request->IdentifiantDeTerrain;
+        $Terrain->Nom_Terrain=$request->Nom_Terrain;
+       
         $Terrain->Capacité=$request->Capacité;
         $Terrain->activité = $request->activité;
         

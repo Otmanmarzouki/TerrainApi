@@ -40,7 +40,7 @@ Route::post('/login', function (Request $request) {
     } 
    
 
-    $Token = $user->createToken($request->password)->plainTextToken;
+    $Token = $user->createToken($request->email)->plainTextToken;
     $response =['user' => $user,'token' =>$Token];
 
     return response($response,201);
