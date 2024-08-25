@@ -18,7 +18,11 @@ return new class extends Migration
             $table->string('Nom_Terrain');
             $table->string('activité');
             $table->integer('Capacité');
-           $table->timestamps();
+            $table->string('type_Terrain');   
+            $table->decimal('prix', 8, 2);     
+            $table->string('dimension1');      
+            $table->string('dimension2');      
+            $table->timestamps();
            
             
         });

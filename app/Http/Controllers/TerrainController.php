@@ -28,16 +28,22 @@ class TerrainController extends Controller
     {
         $Terrain = new Terrain();
          $request->validate([
-            'Nom_Terrain'=>'required',
-            
-            'Capacité'=>'required',
-            'activité'=>'required',
+        'Nom_Terrain' => 'required|string|max:255',
+        'type_Terrain' => 'required|string|max:255',
+        'Capacité' => 'required|integer',
+        'activité' => 'required|string|max:255',
+        'prix' => 'required|numeric',
+        'dimension1' => 'required|string|max:255', 
+        'dimension2' => 'required|string|max:255'
        
         ]);
-        $Terrain->Nom_Terrain=$request->Nom_Terrain;
-       
-        $Terrain->Capacité=$request->Capacité;
-        $Terrain->activité = $request->activité;
+       $Terrain->Nom_Terrain = $request->Nom_Terrain;
+       $Terrain->type_Terrain = $request->type_Terrain;
+       $Terrain->Capacité = $request->Capacité;
+       $Terrain->activité = $request->activité;
+       $Terrain->prix = $request->prix;
+       $Terrain->dimension1 = $request->dimension1; 
+       $Terrain->dimension2 = $request->dimension2;
         
         $result= $Terrain->save();
         if($result) {
@@ -73,13 +79,27 @@ class TerrainController extends Controller
         }
     }
 
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        $terrain = Terrain::find($id);
+        $terrainId = $request->query('id');
+        $terrain = Terrain::findOrFail($terrainId);
         $terrain->delete();
-        return response()->json(['message' =>'Terrain has been removed']);
-
-       
-    }
     
+        return response()->json(['message' => 'Terrain deleted successfully.']);
+    }
+    public function getTerainById($id) {
+        // Use find instead of findOrFail
+        $terrain = Terrain::find($id);
+
+        if ($terrain) {
+            return response()->json($terrain);
+        }
+
+        return response()->json([
+            'message' => 'Terrain not found',
+            'id' => $id,
+        ], 404);
+    
+    
+}
 }

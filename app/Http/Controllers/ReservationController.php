@@ -35,8 +35,7 @@ class ReservationController extends Controller
         
         $firstDate = Carbon::createFromFormat('Y-m-d H:i:s',$request['DateDebut']);
         $secondDate = Carbon::createFromFormat('Y-m-d H:i:s',$request['DateFin']);
-       echo  $firstDate;
-         
+       
        
        if(Reservation::where('DateDebut', '<=', $firstDate)->where('DateFin', '>=',$secondDate)->exists()){
         return response()->json(['message' => 'Terrain Already booked']);

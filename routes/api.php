@@ -54,18 +54,15 @@ Route::post('/adduser',[UserController::class,'create']);
 
 Route::post('/addTerrain',[TerrainController::class,'create']);
 Route::get('/getTerrain',[TerrainController::class,'index']);
+Route::get('/getTerrain/{id}', [TerrainController::class, 'getTerainById']);
 Route::post('/update/{id}',[TerrainController::class,'update']);
-Route::post('/delete/{id}',[TerrainController::class,'destroy']);
+Route::delete('/deleteTerrain', [TerrainController::class, 'destroy']);
 
 
 //----ReservationApis-----//
-Route::post('/getReservations',[ReservationController::class,'index']);
+Route::get('/getReservations',[ReservationController::class,'index']);
 Route::post('/addReservation',[ReservationController::class,'create']);
 Route::post('/updateReservation/{id}',[ReservationController::class,'update']);
 Route::post('/deleteReservation/{id}',[ReservationController::class,'destroy']);
-
+//----ClientApis-----//
 Route::post('/nombreClient/{sport}',[ReservationController::class,'nombreClient']);
-
-
-
-
