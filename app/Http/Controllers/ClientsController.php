@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Clients;
+use App\Models\Client;
 use App\Http\Requests\StoreClientsRequest;
 use App\Http\Requests\UpdateClientsRequest;
 
@@ -42,10 +42,10 @@ class ClientsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Clients  $clients
+     * @param  \App\Models\Client  $clients
      * @return \Illuminate\Http\Response
      */
-    public function show(Clients $clients)
+    public function show(Client $client)
     {
         //
     }
@@ -56,7 +56,7 @@ class ClientsController extends Controller
      * @param  \App\Models\Clients  $clients
      * @return \Illuminate\Http\Response
      */
-    public function edit(Clients $clients)
+    public function edit(Client $client)
     {
         //
     }
@@ -68,7 +68,7 @@ class ClientsController extends Controller
      * @param  \App\Models\Clients  $clients
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateClientsRequest $request, Clients $clients)
+    public function update(UpdateClientsRequest $request, Client $clients)
     {
         //
     }
@@ -76,10 +76,10 @@ class ClientsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Clients  $clients
+     * @param  \App\Models\Client  $clients
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Clients $clients)
+    public function destroy(Client $clients)
     {
         //
     }

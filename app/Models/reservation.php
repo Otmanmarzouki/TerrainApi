@@ -14,13 +14,13 @@ class reservation extends Model
         'DateFin',
     ];
 
-    public function Clients()
+    public function Client()
 {
-    return $this->belongsTo(Clients::class);
+    return $this->belongsTo(Client::class, 'client_id');
 }
 public function Terrain()
 {
-    return $this->belongsTo(Terrain::class);
+    return $this->belongsTo(Terrain::class, 'terrains_id');
 }
    
 }
