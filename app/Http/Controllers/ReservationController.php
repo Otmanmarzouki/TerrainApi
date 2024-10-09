@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Reservation;
 use App\Models\Client;
 use App\Models\Terrain;
-use App\Http\Requests\StorereservationRequest;
-use App\Http\Requests\UpdatereservationRequest;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -14,15 +12,15 @@ class ReservationController extends Controller
 {
     public function index()
     {
-        // Get all reservations and eager load the related terrain (activité)
+       
         $reservations = Reservation::with('terrain')->get();
     
-        // Check if any reservations exist
+      
         if ($reservations->isEmpty()) {
             return response()->json(['message' => 'There is no terrain recorded']);
         } 
     
-        // Return the reservations, including terrain information
+      
         return response()->json($reservations);
     }
     
