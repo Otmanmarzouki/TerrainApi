@@ -31,7 +31,9 @@ class ReservationController extends Controller
             'Prenom' => $request->Prenom,
             'Nom' => $request->Nom,
             'Email' => $request->Email,
-            'Tel' => $request->Tel
+            'Tel' => $request->Tel,
+            'Sexe' => $request->Sexe
+            
         ]);
         $customer_id = $customer->id;
         $terrain_id = Terrain::where('activité', $request->activité)->first()->id; 

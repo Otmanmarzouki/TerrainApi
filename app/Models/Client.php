@@ -14,6 +14,8 @@ class Client extends Model
         'Nom',
         'Email',
         'Tel',
+        'logo',
+        'Sexe'
         
     ];
     public function reservation()

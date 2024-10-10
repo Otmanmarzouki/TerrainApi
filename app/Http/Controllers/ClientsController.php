@@ -97,16 +97,37 @@ class ClientsController extends Controller
 
     public function findUniqueClient($id)
     {
-        // Find the client by the given ID or fail with a 404 error automatically
         $client = Client::findOrFail($id);
-    
-        // Return the client data as JSON
-        return response()->json([
+            return response()->json([
             'success' => true,
             'data' => $client,
             'message' => 'Client retrieved successfully.',
         ], 200);
     }
+
+    public function uploadLogo(Request $request, $id)
+{
+    
+    $request->validate([
+        'logo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+    ]);
+    $client = Client::findOrFail($id);
+
+    if ($request->hasFile('logo')) {
+        $fileName = time() . '_' . $request->file('logo')->getClientOriginalName();
+        $filePath = $request->file('logo')->storeAs('logos', $fileName, 'public');
+
+        $client->logo = $filePath;
+        $client->save();
+        return response()->json([
+            'logo' => $filePath,
+            'message' => 'Logo uploaded successfully',
+        ]);
+    }
+
+    return response()->json(['message' => 'No file uploaded'], 400);
+}
+
    
-   
+ 
 }

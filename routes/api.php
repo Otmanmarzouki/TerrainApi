@@ -69,5 +69,6 @@ Route::post('/deleteReservation/{id}',[ReservationController::class,'destroy']);
 Route::post('/nombreClient/{sport}',[ReservationController::class,'nombreClient']);
 //----ClientApis-----//
 Route::get('/getClients',[ClientsController::class,'index']);
-Route::get('/clients/{id}', [ClientsController::class, 'findUniqueClient']);
+Route::get('/client/{id}', [ClientsController::class, 'findUniqueClient']);
 Route::delete('/deleteClient', [ClientsController::class, 'destroy']);
+Route::post('/clients/{id}/upload-logo', [ClientsController::class, 'uploadLogo']);
