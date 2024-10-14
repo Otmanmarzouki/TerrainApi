@@ -108,4 +108,6 @@ public function getClientsCountBySport(Request $request)
 
     return response()->json(['client_count' => $clientCount]);
 }
+
+
 }

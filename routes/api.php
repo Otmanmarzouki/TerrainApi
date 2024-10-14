@@ -66,7 +66,7 @@ Route::get('/getReservations',[ReservationController::class,'index']);
 Route::post('/addReservation',[ReservationController::class,'create']);
 Route::post('/updateReservation/{id}',[ReservationController::class,'update']);
 Route::post('/deleteReservation/{id}',[ReservationController::class,'destroy']);
-Route::post('/nombreClient/{sport}',[ReservationController::class,'nombreClient']);
+Route::post('/clients-count-by-sport', [ReservationController::class, 'getClientsCountBySport']);
 //----ClientApis-----//
 Route::get('/getClients',[ClientsController::class,'index']);
 Route::get('/client/{id}', [ClientsController::class, 'findUniqueClient']);
