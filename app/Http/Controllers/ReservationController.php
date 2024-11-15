@@ -14,21 +14,18 @@ class ReservationController extends Controller
     public function index()
     {
         $reservations = Reservation::with('terrain')->get();
-        $draftCount = Reservation::where('drafts', true)->count(); // Compte les réservations en brouillon
 
         if ($reservations->isEmpty()) {
             return response()->json(['message' => 'There is no terrain recorded']);
         }
+ 
+        return response()->json($reservations);
 
-        return response()->json([
-            'reservations' => $reservations,
-            'draftCount' => $draftCount, // Inclut le nombre de brouillons dans la réponse
-        ]);
+       
     }
 
     public function create(Request $request)
     {
-        // Validation des données
         $request->validate([
             'Prenom' => 'required|string',
             'Nom' => 'required|string',
@@ -38,7 +35,6 @@ class ReservationController extends Controller
             'activité' => 'required|string',
             'DateDebut' => 'required|date',
             'DateFin' => 'required|date|after_or_equal:DateDebut',
-            'drafts' => 'boolean', // Validation pour drafts
         ]);
 
         $customer = Client::firstOrCreate([
@@ -65,13 +61,16 @@ class ReservationController extends Controller
             $reservation->client_id = $customer_id;
             $reservation->DateDebut = $firstDate;
             $reservation->DateFin = $secondDate;
-            $reservation->drafts = $request->drafts ?? false;
+            $reservation->drafts = true;
 
             $result = $reservation->save();
             if ($result) {
-                return response()->json(['message' => 'Terrain has been booked']);
+                return response()->json([
+                    'message' => 'Terrain has been booked',
+                    'reservation' => $reservation
+                ], 201); 
             } else {
-                return response()->json(['errors' => $request->validate->errors()]);
+                return response()->json(['errors' => $request->validate->errors()], 400);
             }
         }
     }
@@ -83,7 +82,6 @@ class ReservationController extends Controller
         if (!$reservation) {
             return response()->json(['message' => 'Reservation not found'], 404);
         }
-
         $request->validate([
             'DateDebut' => 'required|date',
             'DateFin' => 'required|date|after_or_equal:DateDebut',
@@ -107,13 +105,19 @@ class ReservationController extends Controller
     
     public function updateStatus($id)
     {
-       
         $reservation = Reservation::find($id);
-        $reservation->status = 'Confirmed';
+    
+        // Check if reservation exists
+        if (!$reservation) {
+            return response()->json(['error' => 'Reservation not found'], 404);
+        }
+    
+        $reservation->drafts = false; 
         $reservation->save();
-
+    
         return response()->json($reservation, 200);
     }
+    
 
     public function destroy($id)
     {
@@ -142,4 +146,12 @@ class ReservationController extends Controller
 
         return response()->json(['client_count' => $clientCount]);
     }
+
+
+    public function getDraftCount()
+{
+    $draftCount = Reservation::where('drafts', true)->count();
+
+    return response()->json(['draftCount' => $draftCount]);
+}
 }
