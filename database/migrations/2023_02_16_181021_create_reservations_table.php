@@ -19,6 +19,7 @@ return new class extends Migration
             $table->unsignedBigInteger('client_id'); 
             $table->date('DateDebut');
             $table->date('DateFin');
+            $table->enum('status', ['draft', 'confirmed'])->default('draft');
             $table->timestamps();
             $table->foreign('terrains_id')
             ->references('id')->on('terrains')

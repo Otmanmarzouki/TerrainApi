@@ -38,7 +38,7 @@ class ReservationController extends Controller
         $customer_id = $customer->id;
         $terrain_id = Terrain::where('activité', $request->activité)->first()->id; 
         
-        $firstDate = Carbon::parse($request->DateDebut)->setTimezone('Europe/Paris'); // Use the appropriate timezone
+        $firstDate = Carbon::parse($request->DateDebut)->setTimezone('Europe/Paris'); 
         $secondDate = Carbon::parse($request->DateFin)->setTimezone('Europe/Paris');
        
        
@@ -54,7 +54,7 @@ class ReservationController extends Controller
         $result = $reservation->save();
         if ($result) {
 
-            return response()->json(['message' => 'Terrain has been booked']);
+            return response()->json($reservation, 201);
         } else {
             return response()->json(['errors' => $request->validate->errors()]);
         }
@@ -83,6 +83,16 @@ class ReservationController extends Controller
             return response()->json(['errors' => $request->validate->errors()]);
         }
     }
+    
+    public function updateStatus($id)
+    {
+       
+        $reservation = Reservation::find($id);
+        $reservation->status = 'Confirmed';
+        $reservation->save();
+
+        return response()->json($reservation, 200);
+    }
 
     public function destroy($id)
     {
@@ -95,11 +105,6 @@ class ReservationController extends Controller
 
 public function getClientsCountBySport(Request $request)
 {
-    $terrain = Terrain::where('activité', $request->activité)->first();
-    
-    if (!$terrain) {
-        return response()->json(['message' => 'No terrains found for this sport'], 404);
-    }
 
     $clientCount = Reservation::join('terrains', 'reservations.terrains_id', '=', 'terrains.id')
         ->where('terrains.activité', $request->activité)  
@@ -109,5 +114,16 @@ public function getClientsCountBySport(Request $request)
     return response()->json(['client_count' => $clientCount]);
 }
 
+public function confirmReservation($id)
+{
+    $reservation = Reservation::find($id);
 
+    if (!$reservation) {
+        return response()->json(['error' => 'Reservation not found.'], 404);
+    }
+    $reservation->status = 'confirmed';
+    $reservation->save();
+
+    return response()->json(['message' => 'Reservation confirmed successfully.']);
+}
 }
