@@ -38,14 +38,14 @@ class UserController extends Controller
             return response()->json(['errors'=>$request->validate->errors()]);
         }
     }
+    
+    
     public function update(Request $request, $id)
-{
+    {
     $user = User::find($id);
-
     if (!$user) {
         return response()->json(['message' => 'User not found'], 404);
     }
-
     $request->validate([
         'name' => 'sometimes|required',
         'email' => 'sometimes|required|email',
@@ -58,7 +58,6 @@ class UserController extends Controller
     if ($request->has('email')) {
         $user->email = $request->email;
     }
-
     if ($request->has('password')) {
         $user->password = Hash::make($request->password);
     }
@@ -70,24 +69,19 @@ class UserController extends Controller
         return response()->json(['message' => 'Failed to update user'], 500);
     }
 }
+
+
 public function delete($id)
 {
-    $user = User::find($id);
+        $user = User::find($$id);
+        
+        if (!$user) {
+            return response()->json(['message' => 'user not found'], 404);
+        }
+        $user->delete();
+        return response()->json(['message' => 'User deleted successfully.']);
 
-    if (!$user) {
-        return response()->json(['message' => 'User not found'], 404);
-    }
-
-    $result = $user->delete();
-
-    if ($result) {
-        return response()->json(['message' => 'User deleted successfully']);
-    } else {
-        return response()->json(['message' => 'Failed to delete user'], 500);
-    }
 }
 
-
-   
 
 }

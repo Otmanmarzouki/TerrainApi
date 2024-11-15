@@ -48,9 +48,11 @@ Route::post('/login', function (Request $request) {
     return response($response,201);
     
 });
-
+ //----UserApis-----//
 
 Route::post('/adduser',[UserController::class,'create']);
+Route::put('/updateUser/{id}', [UserController::class, 'update']);
+Route::delete('/deleteUser', [UserController::class, 'destroy']);
 
 //----TerrainApis-----//
 
