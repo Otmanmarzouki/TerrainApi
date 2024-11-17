@@ -71,9 +71,9 @@ class UserController extends Controller
 }
 
 
-public function delete($id)
+public function destroy($id)
 {
-        $user = User::find($$id);
+        $user = User::find($id);
         
         if (!$user) {
             return response()->json(['message' => 'user not found'], 404);

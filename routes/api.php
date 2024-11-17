@@ -52,7 +52,7 @@ Route::post('/login', function (Request $request) {
 
 Route::post('/adduser',[UserController::class,'create']);
 Route::put('/updateUser/{id}', [UserController::class, 'update']);
-Route::delete('/deleteUser', [UserController::class, 'destroy']);
+Route::delete('/deleteUser/{id}', [UserController::class, 'destroy']);
 
 //----TerrainApis-----//
 
@@ -60,7 +60,7 @@ Route::post('/addTerrain',[TerrainController::class,'create']);
 Route::get('/getTerrain',[TerrainController::class,'index']);
 Route::get('/getTerrain/{id}', [TerrainController::class, 'getTerainById']);
 Route::post('/update/{id}',[TerrainController::class,'update']);
-Route::delete('/deleteTerrain', [TerrainController::class, 'destroy']);
+Route::delete('/deleteTerrain/{id}', [TerrainController::class, 'destroy']);
 
 
 //----ReservationApis-----//

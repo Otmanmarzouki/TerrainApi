@@ -79,16 +79,18 @@ class TerrainController extends Controller
         }
     }
 
-    public function destroy(Request $request)
+    public function destroy($id)
     {
-        $terrainId = $request->query('id');
-        $terrain = Terrain::findOrFail($terrainId);
+        
+        $terrain = Terrain::find($id);
         $terrain->delete();
     
         return response()->json(['message' => 'Terrain deleted successfully.']);
     }
+
+
     public function getTerainById($id) {
-        // Use find instead of findOrFail
+    
         $terrain = Terrain::find($id);
 
         if ($terrain) {
