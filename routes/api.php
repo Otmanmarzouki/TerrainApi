@@ -51,16 +51,16 @@ Route::post('/login', function (Request $request) {
  //----UserApis-----//
 
 Route::post('/adduser',[UserController::class,'create']);
-Route::put('/updateUser/{id}', [UserController::class, 'update']);
-Route::delete('/deleteUser/{id}', [UserController::class, 'destroy']);
+Route::put('/user/modifier/{id}', [UserController::class, 'update']);
+Route::delete('/user/delete/{id}', [UserController::class, 'destroy']);
 
 //----TerrainApis-----//
 
-Route::post('/addTerrain',[TerrainController::class,'create']);
-Route::get('/getTerrain',[TerrainController::class,'index']);
-Route::get('/getTerrain/{id}', [TerrainController::class, 'getTerainById']);
-Route::post('/update/{id}',[TerrainController::class,'update']);
-Route::delete('/deleteTerrain/{id}', [TerrainController::class, 'destroy']);
+Route::post('/terrain/ajouter',[TerrainController::class,'create']);
+Route::get('/terrains',[TerrainController::class,'index']);
+Route::get('/terrain/{id}', [TerrainController::class, 'getTerainById']);
+Route::put('/terrain/modifier/{id}',[TerrainController::class,'update']);
+Route::delete('/terrain/delete/{id}', [TerrainController::class, 'destroy']);
 
 
 //----ReservationApis-----//
