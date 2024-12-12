@@ -57,7 +57,7 @@ class ReservationController extends Controller
             return response()->json(['message' => 'Terrain Already booked']);
         } else {
             $reservation = new Reservation();
-            $reservation->terrains_id = $terrain_id;
+            $reservation->terrain_id = $terrain_id;
             $reservation->client_id = $customer_id;
             $reservation->DateDebut = $firstDate;
             $reservation->DateFin = $secondDate;
@@ -107,7 +107,6 @@ class ReservationController extends Controller
     {
         $reservation = Reservation::find($id);
     
-        // Check if reservation exists
         if (!$reservation) {
             return response()->json(['error' => 'Reservation not found'], 404);
         }
@@ -154,4 +153,43 @@ class ReservationController extends Controller
 
     return response()->json(['draftCount' => $draftCount]);
 }
+
+
+
+public function checkAvailability(Request $request)
+{
+    $request->validate([
+        'Date' => 'nullable|date',
+        'terrainId' => 'nullable|integer', 
+    ]);
+
+    $date = $request->Date ? Carbon::parse($request->Date)->startOfDay() : null;
+    $terrainId = $request->terrainId;
+    $terrains = Terrain::with(['reservations' => function ($query) use ($date) {
+        if ($date) {
+            $query->whereDate('DateDebut', '<=', $date)
+                ->whereDate('DateFin', '>=', $date);
+        }
+    }]);
+
+    if ($terrainId) {
+        $terrains->where('id', $terrainId);
+    }
+
+    $terrains = $terrains->get();
+    $availability = $terrains->map(function ($terrain) {
+        return [
+            'terrain_id' => $terrain->id,
+            'terrain_name' => $terrain->Nom_Terrain,
+            'available' => $terrain->reservations->isEmpty(), 
+            'reservations' => $terrain->reservations,
+        ];
+    });
+
+    return response()->json($availability, 200);
+}
+
+
+
+
 }

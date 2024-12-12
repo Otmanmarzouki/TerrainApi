@@ -19,7 +19,11 @@ class Terrain extends Model
         'dimension1',
         'dimension2'
     ];
-
+ 
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class);
+    }
 
 
 }

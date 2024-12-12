@@ -15,13 +15,13 @@ return new class extends Migration
     {
         Schema::create('reservations', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('terrains_id');
+            $table->unsignedBigInteger('terrain_id');
             $table->unsignedBigInteger('client_id'); 
             $table->date('DateDebut');
             $table->date('DateFin');
-            $table->enum('status', ['draft', 'confirmed'])->default('draft');
+            $table->boolean('drafts')->default(true);
             $table->timestamps();
-            $table->foreign('terrains_id')
+            $table->foreign('terrain_id')
             ->references('id')->on('terrains')
             ->onDelete('cascade');
             $table->foreign('client_id')

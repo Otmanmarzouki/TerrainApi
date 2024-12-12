@@ -5,13 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class reservation extends Model
+class Reservation extends Model
 {
     use HasFactory;
+
     protected $fillable = [
-        
         'DateDebut',
         'DateFin',
+       
     ];
 
     public function Client()
@@ -20,7 +21,7 @@ class reservation extends Model
 }
 public function Terrain()
 {
-    return $this->belongsTo(Terrain::class, 'terrains_id');
+    return $this->belongsTo(Terrain::class, 'terrain_id');
 }
    
 }

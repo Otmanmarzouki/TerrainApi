@@ -76,3 +76,5 @@ Route::get('/getClients',[ClientsController::class,'index']);
 Route::get('/client/{id}', [ClientsController::class, 'findUniqueClient']);
 Route::delete('/deleteClient', [ClientsController::class, 'destroy']);
 Route::post('/clients/{id}/upload-logo', [ClientsController::class, 'uploadLogo']);
+//----historiqueApis-----//
+Route::post('/check-availability',[ReservationController::class,'checkAvailability']);
