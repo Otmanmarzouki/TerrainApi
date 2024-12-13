@@ -13,16 +13,16 @@ class ReservationController extends Controller
 {
     public function index()
     {
-        $reservations = Reservation::with('terrain')->get();
-
+       
+        $reservations = Reservation::with('terrain')->where('canceled', '!=', true)->get();
+    
         if ($reservations->isEmpty()) {
             return response()->json(['message' => 'There is no terrain recorded']);
         }
- 
+    
         return response()->json($reservations);
-
-       
     }
+    
 
     public function create(Request $request)
     {
@@ -112,6 +112,20 @@ class ReservationController extends Controller
         }
     
         $reservation->drafts = false; 
+        $reservation->save();
+    
+        return response()->json($reservation, 200);
+    }
+
+    public function cancelReservation($id)
+    {
+        $reservation = Reservation::find($id);
+    
+        if (!$reservation) {
+            return response()->json(['error' => 'Reservation not found'], 404);
+        }
+    
+        $reservation->canceled = false; 
         $reservation->save();
     
         return response()->json($reservation, 200);
