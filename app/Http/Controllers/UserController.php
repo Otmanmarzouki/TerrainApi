@@ -109,5 +109,12 @@ public function destroy($id)
 
 }
 
+public function getUser(Request $request){
+    $user = $request->user();
+    return response()->json($user);
+    
+
+}
+
 
 }

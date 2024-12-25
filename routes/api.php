@@ -22,15 +22,14 @@ use Illuminate\Support\Facades\Hash;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+
 
 
  //----UserApis-----//
  Route::post('/login', [UserController::class, 'login']);
  Route::post('/signup', [UserController::class, 'signUp']);
-Route::post('/adduser',[UserController::class,'create']);
+ Route::middleware('auth:sanctum')->get('/user', [UserController::class, 'getUser']);
+
 Route::put('/user/modifier/{id}', [UserController::class, 'update']);
 Route::delete('/user/delete/{id}', [UserController::class, 'destroy']);
 
