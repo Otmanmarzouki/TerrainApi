@@ -9,7 +9,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -26,30 +26,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/login', function (Request $request) {
-    $request->validate([
-        'email' => 'required|email',
-        'password' => 'required',
-     
-    ]);
- 
-    $user = User::where('email', $request->email)->first();
- 
-    if (! $user || ! Hash::check($request->password, $user->password)) {
-        throw ValidationException::withMessages([
-         'email' => ['The provided credentials are incorrect.'],
-        ]);
-    } 
-   
 
-    $Token = $user->createToken($request->email)->plainTextToken;
-    $response =['user' => $user,'token' =>$Token];
-
-    return response($response,201);
-    
-});
  //----UserApis-----//
-
+ Route::post('/login', [UserController::class, 'login']);
+ Route::post('/signup', [UserController::class, 'signUp']);
 Route::post('/adduser',[UserController::class,'create']);
 Route::put('/user/modifier/{id}', [UserController::class, 'update']);
 Route::delete('/user/delete/{id}', [UserController::class, 'destroy']);
@@ -78,4 +58,4 @@ Route::get('/client/{id}', [ClientsController::class, 'findUniqueClient']);
 Route::delete('/deleteClient', [ClientsController::class, 'destroy']);
 Route::post('/clients/{id}/upload-logo', [ClientsController::class, 'uploadLogo']);
 //----historiqueApis-----//
-Route::post('/check-availability',[ReservationController::class,'checkAvailability']);
+Route::post('/check-availability',[ReservationController::class,'getTerrainsWithReservations']);

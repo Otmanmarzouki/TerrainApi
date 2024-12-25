@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
@@ -13,29 +14,54 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function login(Request $request)
     {
-        //
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            throw ValidationException::withMessages([
+                'email' => ['The provided credentials are incorrect.'],
+            ]);
+        }
+
+        $token = $user->createToken($request->email)->plainTextToken;
+
+        return response()->json([
+            'user' => $user,
+            'token' => $token,
+        ], 201);
     }
 
-    public function create(Request $request)
+
+    public function signUp(Request $request)
     {
-        $user = new User();
         $request->validate([
-            'name'=>'required',
-            'email'=>'required',
-            'password'=>'required',
-       
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:6',
         ]);
-        $user->name=$request->name;
-        $user->email=$request->email;
-        $user->password=Hash::make($request->password);
-        $result= $user->save();
-        if($result) {
-          
-            return response()->json(['message' =>'You signed up correctly']);
-        }else {
-            return response()->json(['errors'=>$request->validate->errors()]);
+    
+        $user = new User();
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = Hash::make($request->password);
+        if ($user->save()) {
+            $token = $user->createToken($user->email)->plainTextToken;
+    
+            return response()->json([
+                'message' => 'You signed up correctly',
+                'user' => $user,
+                'token' => $token,
+            ], 201); 
+        } else {
+            return response()->json([
+                'message' => 'Something went wrong',
+            ], 500); 
         }
     }
     

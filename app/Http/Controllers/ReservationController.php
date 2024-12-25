@@ -152,7 +152,7 @@ class ReservationController extends Controller
             return response()->json(['message' => 'No terrains found for this sport'], 404);
         }
 
-        $clientCount = Reservation::join('terrains', 'reservations.terrains_id', '=', 'terrains.id')
+        $clientCount = Reservation::join('terrains', 'reservations.terrain_id', '=', 'terrains.id')
             ->where('terrains.activité', $request->activité)
             ->distinct('reservations.client_id')
             ->count('reservations.client_id');
@@ -170,38 +170,27 @@ class ReservationController extends Controller
 
 
 
-public function checkAvailability(Request $request)
+public function getTerrainsWithReservations(Request $request)
 {
-    $request->validate([
-        'Date' => 'nullable|date',
-        'terrainId' => 'nullable|integer', 
-    ]);
+    $terrainId = $request->input('terrain_id');
+    $terrains = $terrainId
+        ? Terrain::with('reservations')->where('id', $terrainId)->get()
+        : Terrain::with('reservations')->get();
 
-    $date = $request->Date ? Carbon::parse($request->Date)->startOfDay() : null;
-    $terrainId = $request->terrainId;
-    $terrains = Terrain::with(['reservations' => function ($query) use ($date) {
-        if ($date) {
-            $query->whereDate('DateDebut', '<=', $date)
-                ->whereDate('DateFin', '>=', $date);
-        }
-    }]);
-
-    if ($terrainId) {
-        $terrains->where('id', $terrainId);
+    if ($terrains->isEmpty()) {
+        return response()->json(['message' => 'Terrain not found.'], 404);
     }
-
-    $terrains = $terrains->get();
-    $availability = $terrains->map(function ($terrain) {
+    $data = $terrains->map(function ($terrain) {
         return [
             'terrain_id' => $terrain->id,
             'terrain_name' => $terrain->Nom_Terrain,
-            'available' => $terrain->reservations->isEmpty(), 
             'reservations' => $terrain->reservations,
         ];
     });
-
-    return response()->json($availability, 200);
+    return response()->json($terrainId ? $data->first() : $data, 200);
 }
+
+
 
 
 
