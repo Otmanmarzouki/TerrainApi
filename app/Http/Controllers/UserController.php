@@ -5,15 +5,20 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Log;
+
+
+
+
+
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
+
+
     public function login(Request $request)
     {
         $request->validate([
@@ -34,8 +39,24 @@ class UserController extends Controller
         return response()->json([
             'user' => $user,
             'token' => $token,
-        ], 201);
+        ], 201)->cookie(
+            'auth_token',
+            $token,
+            60 * 24 * 7,
+            '/',
+            null,
+            false,
+            true,
+            false,
+            'Lax'
+        );
     }
+
+
+
+
+
+
 
 
     public function signUp(Request $request)
@@ -45,76 +66,85 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6',
         ]);
-    
+
         $user = new User();
         $user->name = $request->name;
         $user->email = $request->email;
         $user->password = Hash::make($request->password);
         if ($user->save()) {
             $token = $user->createToken($user->email)->plainTextToken;
-    
+
             return response()->json([
                 'message' => 'You signed up correctly',
                 'user' => $user,
                 'token' => $token,
-            ], 201); 
+            ], 201)->cookie('access_token', $token, 60, '/', null, true, true);
         } else {
             return response()->json([
                 'message' => 'Something went wrong',
-            ], 500); 
+            ], 500);
         }
     }
-    
-    
-    public function update(Request $request, $id)
+
+
+    public function update(Request $request)
     {
-    $user = User::find($id);
-    if (!$user) {
-        return response()->json(['message' => 'User not found'], 404);
-    }
-    $request->validate([
-        'name' => 'sometimes|required',
-        'email' => 'sometimes|required|email',
-        'password' => 'sometimes|required|min:6',
-    ]);
-    if ($request->has('name')) {
-        $user->name = $request->name;
+
+        $user = $request->user();
+        Log::info($user);
+        if (!$user) {
+            return response()->json(['message' => 'You are not logged in'], 401);
+        }
+
+        $validatedData = $request->validate([
+            'name' => 'sometimes|required|string|max:255',
+            'dob' => 'sometimes|required|date|before:today',
+            'email' => 'sometimes|required|email|max:255|unique:users,email,' . $user->id,
+            'tel' => 'sometimes|required|string|min:10|max:15',
+            'adresse' => 'sometimes|required|string|max:255',
+            'gender' => 'sometimes|required|string|max:255',
+        ]);
+        if ($request->hasFile('avatar')) {
+
+            $validatedAvatar = $request->validate([
+                'avatar' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            ]);
+            $avatarPath = $request->file('avatar')->store('avatars', 'public');
+            $user->update([
+                'avatar' => $avatarPath,
+            ]);
+        }
+        $user->update($validatedData);
+        return response()->json([
+            'message' => 'Profile updated successfully',
+            'user' => $user,
+        ], 200);
     }
 
-    if ($request->has('email')) {
-        $user->email = $request->email;
-    }
-    if ($request->has('password')) {
-        $user->password = Hash::make($request->password);
-    }
-    $result = $user->save();
-
-    if ($result) {
-        return response()->json(['message' => 'User updated successfully']);
-    } else {
-        return response()->json(['message' => 'Failed to update user'], 500);
-    }
-}
 
 
-public function destroy($id)
-{
+
+
+
+
+
+
+
+
+    public function destroy($id)
+    {
         $user = User::find($id);
-        
+
         if (!$user) {
             return response()->json(['message' => 'user not found'], 404);
         }
         $user->delete();
         return response()->json(['message' => 'User deleted successfully.']);
+    }
 
-}
-
-public function getUser(Request $request){
-    $user = $request->user();
-    return response()->json($user);
-    
-
-}
-
-
+    public function getUser(Request $request)
+    {
+        $user = $request->user();
+        return response()->json($user);
+    }
 }
