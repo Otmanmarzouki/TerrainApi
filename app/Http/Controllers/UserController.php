@@ -78,7 +78,17 @@ class UserController extends Controller
                 'message' => 'You signed up correctly',
                 'user' => $user,
                 'token' => $token,
-            ], 201)->cookie('access_token', $token, 60, '/', null, true, true);
+            ], 201)->cookie(
+                'auth_token',
+                $token,
+                60 * 24 * 7,
+                '/',
+                null,
+                false,
+                true,
+                false,
+                'Lax'
+            );
         } else {
             return response()->json([
                 'message' => 'Something went wrong',
