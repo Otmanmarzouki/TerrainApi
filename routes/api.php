@@ -44,12 +44,11 @@ Route::delete('/terrain/delete/{id}', [TerrainController::class, 'destroy']);
 
 //----ReservationApis-----//
 Route::get('/getReservations', [ReservationController::class, 'index']);
-Route::post('/addReservation', [ReservationController::class, 'create']);
+Route::post('/addReservation', [ReservationController::class, 'store']);
 Route::post('/updateReservation/{id}', [ReservationController::class, 'update']);
 Route::post('/deleteReservation/{id}', [ReservationController::class, 'destroy']);
 Route::post('/clients-count-by-sport', [ReservationController::class, 'getClientsCountBySport']);
-Route::put('/reservations/{id}', [ReservationController::class, 'updateStatus']);
-Route::put('/cancel/reservation/{id}', [ReservationController::class, 'cancelReservation']);
+
 Route::get('/drafts', [ReservationController::class, 'getDraftCount']);
 //----ClientApis-----//
 Route::get('/getClients', [ClientsController::class, 'index']);
