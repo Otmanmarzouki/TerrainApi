@@ -117,11 +117,18 @@ class ReservationController extends Controller
     }
 
 
-    public function getDraftCount()
+    public function getCount(Request $request)
     {
-        $draftCount = Reservation::where('drafts', true)->count();
+        $action = $request->input('action');
+        if ($action === "drafts") {
+            $Count = Reservation::where('drafts', true)->count();
+        } else if ($action === "reservations") {
+            $Count = Reservation::count();
+        } else if ($action === "clients") {
+            $Count = Client::count();
+        }
 
-        return response()->json(['draftCount' => $draftCount]);
+        return response()->json(['Count' => $Count]);
     }
 
 
