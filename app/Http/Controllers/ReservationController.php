@@ -14,8 +14,8 @@ class ReservationController extends Controller
 {
     public function index()
     {
+        $reservations = Reservation::with('terrain')->where('canceled',  false)->get();
 
-        $reservations = Reservation::with('terrain')->where('canceled', '!=', true)->get();
 
         if ($reservations->isEmpty()) {
             return response()->json(['message' => 'There is no terrain recorded']);
@@ -34,9 +34,10 @@ class ReservationController extends Controller
             'Email' => 'required|email',
             'Tel' => 'required|string',
             'Sexe' => 'required|string',
-            'activité' => 'required|string',
+            'terrainId' => 'required|integer',
             'DateDebut' => 'required|date',
             'DateFin' => 'required|date|after_or_equal:DateDebut',
+
         ]);
 
         $customer = Client::firstOrCreate([
@@ -47,41 +48,26 @@ class ReservationController extends Controller
             'Sexe' => $request->Sexe
         ]);
 
-        $customer_id = $customer->id;
-        $terrain_id = Terrain::where('activité', $request->activité)->first()->id;
-
         $firstDate = Carbon::parse($request->DateDebut)->setTimezone('Europe/Paris');
         $secondDate = Carbon::parse($request->DateFin)->setTimezone('Europe/Paris');
+        $terrainId = $request->terrainId;
+        $reservation = new Reservation();
+        $reservation->client_id = $customer->id;
+        $reservation->terrain_id = $terrainId;
+        $reservation->DateDebut = $firstDate;
+        $reservation->DateFin = $secondDate;
+        $reservation->save();
+        return response()->json([
+            'message' => 'Terrain has been booked',
+            'reservation' => $reservation
 
-        if (Reservation::where('DateDebut', '<=', $firstDate)
-            ->where('DateFin', '>=', $secondDate)
-            ->exists()
-        ) {
-            return response()->json(['message' => 'Terrain Already booked']);
-        } else {
-            $reservation = new Reservation();
-            $reservation->terrain_id = $terrain_id;
-            $reservation->client_id = $customer_id;
-            $reservation->DateDebut = $firstDate;
-            $reservation->DateFin = $secondDate;
-            $reservation->drafts = true;
-
-            $result = $reservation->save();
-            if ($result) {
-                return response()->json([
-                    'message' => 'Terrain has been booked',
-                    'reservation' => $reservation
-                ], 201);
-            } else {
-                return response()->json(['errors' => $request->validate->errors()], 400);
-            }
-        }
+        ], 201);
     }
+
 
 
     public function update(Request $request, $id)
     {
-        Log::info('Received request to update reservation', ['id' => $id, 'request' => $request->all()]);
 
         $reservation = Reservation::find($id);
 
@@ -124,9 +110,10 @@ class ReservationController extends Controller
             $Count = Reservation::where('drafts', true)->count();
         } else if ($action === "reservations") {
             $Count = Reservation::count();
-        } else if ($action === "clients") {
-            $Count = Client::count();
+        } else if ($action === "newClients") {
+            $Count = Client::where('created_at', '>=', now()->subDays(7))->count();
         }
+
 
         return response()->json(['Count' => $Count]);
     }
